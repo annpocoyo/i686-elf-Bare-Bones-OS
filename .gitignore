@@ -1,3 +1,6 @@
 # Ignore builds
 *.o
 build/
+
+# Visual Studio Code
+.vscode/
