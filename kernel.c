@@ -142,6 +142,6 @@ void kernel_main(void)
 		terminal_writestring("This should be on the next line.\n");
 		terminal_writestring("THIS IS AMAZING! I built my own hello world kernel\n");
 		terminal_writestring("with newline support!\n");
-		terminal_writestring("And scrolling!\n");
+		terminal_writestring("and scrolling!\n");
 	}
 }
