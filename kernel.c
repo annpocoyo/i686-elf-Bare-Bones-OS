@@ -114,7 +114,7 @@ void terminal_putchar(char c)
 		// Yes, skip to next line.
 		terminal_column = 0;
 
-		// Go to next line?
+		// Screen full?
 		if (++terminal_row == VGA_HEIGHT)
 			terminal_scroll(); // Reached end of screen. Scroll down.
 	}
