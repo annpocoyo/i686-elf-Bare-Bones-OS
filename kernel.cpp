@@ -72,7 +72,7 @@ void terminal_initialize(void)
 	}
 }
  
-void terminal_setcolor(uint8_t color) 
+void terminal_setcolor_default(uint8_t color) 
 {
 	terminal_color = color;
 }
@@ -96,12 +96,12 @@ void terminal_scroll(void)
 	terminal_row--;
 }
 
-void terminal_putchar(char c) 
+void terminal_putchar(char c, uint8_t color = terminal_color) 
 {
 	// Is newline?
 	if (c != '\n'){
 		// No, progress normally.
-		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+		terminal_putentryat(c, color, terminal_column, terminal_row);
 		
 		// Line wrapping
 		if (++terminal_column == VGA_WIDTH) {
@@ -120,15 +120,15 @@ void terminal_putchar(char c)
 	}
 }
  
-void terminal_write(const char* data, size_t size) 
+void terminal_write(const char* data, size_t size, uint8_t color = terminal_color) 
 {
 	for (size_t i = 0; i < size; i++)
-		terminal_putchar(data[i]);
+		terminal_putchar(data[i], color);
 }
  
-void terminal_writestring(const char* data) 
+void terminal_writestring(const char* data, uint8_t color = terminal_color) 
 {
-	terminal_write(data, strlen(data));
+	terminal_write(data, strlen(data), color);
 }
  
 extern "C" void kernel_main(void) 
@@ -144,4 +144,15 @@ extern "C" void kernel_main(void)
 		terminal_writestring("with newline support!\n");
 		terminal_writestring("and scrolling!\n");
 	}
+	
+	/* Let's showcase the colours :) */
+	terminal_writestring("We even have some nice looking ");
+	terminal_writestring("C", vga_entry_color(VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK));
+	terminal_writestring("o", vga_entry_color(VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK));
+	terminal_writestring("l", vga_entry_color(VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK));
+	terminal_writestring("o", vga_entry_color(VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK));
+	terminal_writestring("u", vga_entry_color(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK));
+	terminal_writestring("r", vga_entry_color(VGA_COLOR_RED, VGA_COLOR_BLACK));
+	terminal_writestring("s", vga_entry_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
+	terminal_writestring("!\n");
 }
