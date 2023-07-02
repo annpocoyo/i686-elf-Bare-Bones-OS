@@ -83,6 +83,19 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 	terminal_buffer[index] = vga_entry(c, color);
 }
  
+// Scroll the terminal down one
+void terminal_scroll(void)
+{
+	// Pull the buffer back by screen width (effectively scrolling down by one)
+	for (size_t i = 0; i <= VGA_HEIGHT * VGA_WIDTH; i++) {
+		size_t toMoveUp = i + VGA_WIDTH;
+		terminal_buffer[i] = terminal_buffer[toMoveUp];
+	}
+	
+	// Set terminal row back to insure text stays together
+	terminal_row--;
+}
+
 void terminal_putchar(char c) 
 {
 	// Is newline?
@@ -93,16 +106,17 @@ void terminal_putchar(char c)
 		// Line wrapping
 		if (++terminal_column == VGA_WIDTH) {
 			terminal_column = 0;
+			// Go to next line?
 			if (++terminal_row == VGA_HEIGHT)
-				terminal_row = 0;
+				terminal_scroll(); // Reached end of screen. Scroll down.
 		}
 	} else {
 		// Yes, skip to next line.
 		terminal_column = 0;
 
-		// Line looping (TODO: Add scrolling features)
+		// Go to next line?
 		if (++terminal_row == VGA_HEIGHT)
-				terminal_row = 0;
+			terminal_scroll(); // Reached end of screen. Scroll down.
 	}
 }
  
@@ -122,9 +136,12 @@ void kernel_main(void)
 	/* Initialize terminal interface */
 	terminal_initialize();
  
-	/* Newline support has been achieved as shown below: */
-	terminal_writestring("Hello World!\n");
-	terminal_writestring("This should be on the next line.\n");
-	terminal_writestring("THIS IS AMAZING! I built my own hello world kernel\n");
-	terminal_writestring("with newline support!\n");
+	/* Newline and scrolling support has been achieved as shown below: */
+	for (int i = 1; i != 11; i++) {
+		terminal_writestring("Hello World!\n");
+		terminal_writestring("This should be on the next line.\n");
+		terminal_writestring("THIS IS AMAZING! I built my own hello world kernel\n");
+		terminal_writestring("with newline support!\n");
+		terminal_writestring("And scrolling!\n");
+	}
 }
