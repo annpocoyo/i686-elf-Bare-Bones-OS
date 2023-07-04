@@ -1,36 +1,80 @@
-# Create multiboot kernel (Development)
-build/os.bin: build/kernel.o build/boot.o linker.ld
-	i686-elf-g++ -T linker.ld -o build/os.bin -ffreestanding -O2 -nostdlib build/boot.o build/kernel.o -lgcc
+TARGET?=i686-elf
+BOOTARCH?=i386
+CXX=$(TARGET)-g++
+AS=$(TARGET)-as
+
+PREFIX=/usr
+EXEC_PREFIX=$(PREFIX)
+BOOTDIR=/boot
+LIBDIR=$(EXEC_PREFIX)/lib
+INCLUDEDIR=$(PREFIX)/include
+
+# We need to tell the child make files that they are called by the master makefile
+CALLEDBYMASTER=true
+
+# List of INSTALL targets
+INSTALL_TARGETS=
+
+# List of HEADER targets
+HEADER_TARGETS=
+
+# List of CLEAN targets
+CLEAN_TARGETS=
+
+SYSROOT:=$(PWD)/sysroot
+CXX+= --sysroot=$(SYSROOT) -isystem=$(INCLUDEDIR)
+
+# Export all variables to make them available to child
+export
+
+# Include all project specific targets
+-include ./*/master.config
+
+# Build full (Main Target)
+all: install-headers install | sysroot/
+
+# Phony targets
+.PHONY: all install install-kernel \
+install-headers install-kernel-headers \
+production launch launch-production \
+clean clean-sysroot clean-kernel \
+
+# Install all parts into sysroot
+install: $(INSTALL_TARGETS) install-headers | sysroot/
+
+# Install all headers into sysroot
+install-headers: $(HEADER_TARGETS) | sysroot/
+
+# Create directory structure
+sysroot/:
+	mkdir -p $(SYSROOT)$(LIBDIR)
+	mkdir -p $(SYSROOT)$(INCLUDEDIR)
+	mkdir -p $(SYSROOT)$(BOOTDIR)
 
 # Build an iso (Production)
 production: build/os.iso
 
 # Launch (Development)
-launch: build/os.bin
-	qemu-system-i386 -kernel build/os.bin
+launch: all
+	qemu-system-i386 -kernel $(SYSROOT)$(BOOTDIR)/kernel.bin
 
 # Launch (Production)
 launch-production: build/os.iso
 	qemu-system-i386 -cdrom build/os.iso
 
-# Kernel Build
-build/kernel.o: kernel.cpp
-	mkdir -p build
-	i686-elf-g++ -c kernel.cpp -o build/kernel.o -ffreestanding -O2 -Wall -Wextra -fno-exceptions -fno-rtti
-
-# Assmble Bootstrap
-build/boot.o: boot.s
-	mkdir -p build
-	i686-elf-as boot.s -o build/boot.o
-
 # Build iso
-build/os.iso: build/os.bin grub.cfg
-	mkdir -p build/isodir/boot/grub
-	cp build/os.bin build/isodir/boot/os.bin
-	cp grub.cfg build/isodir/boot/grub/grub.cfg
-	grub-mkrescue -o build/os.iso build/isodir
-	rm -r build/isodir/
+build/os.iso: all grub.cfg
+	@mkdir -p $(SYSROOT)$(BOOTDIR)/grub/
+	cp grub.cfg $(SYSROOT)$(BOOTDIR)/grub/grub.cfg
+	grub-mkrescue -o build/os.iso $(SYSROOT)
 
 # Cleanup
-clean:
-	rm -r build/
+clean: clean-builds clean-sysroot $(CLEAN_TARGETS)
+
+# Clean builds
+clean-builds:
+	rm -rf build/*
+
+# Clean sysroot
+clean-sysroot:
+	rm -r sysroot/

@@ -1,0 +1,3 @@
+# Ignore build folder's contents, but not the folder itself.
+*
+!.gitignore

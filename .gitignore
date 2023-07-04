@@ -1,6 +1,12 @@
 # Ignore builds
 *.o
-build/
+*.bin
+
+# Ignore dependency data
+*.d
+
+# Ignore sysroot
+sysroot/
 
 # Visual Studio Code
 .vscode/
