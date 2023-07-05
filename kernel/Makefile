@@ -17,11 +17,30 @@ CXXFLAGS+= -Wall -Wextra -fno-exceptions -fno-rtti
 # List of folders where builds are stored and received from
 BUILD_FOLDERS=build/ arch/$(BOOTARCH)/build/ kernel/build/ string/build/
 
+# Define location of crti.o and crtn.o (used for calling global constructers)
+# (This will be defined in the arch-specific options)
+CRTI_OBJ=$(ARCH_CRTI_OBJ)
+CRTN_OBJ=$(ARCH_CRTN_OBJ)
+
+# Get the path to crtbegin.o and crtend.o
+CRTBEGIN_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtbegin.o)
+CRTEND_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtend.o)
+
 # List of objects from the kernel
 KERNEL_OBJS=\
 $(KERNEL_ARCH_OBJS) \
 string/build/strlen.o \
 kernel/build/kernel.o \
+
+# Objects to link
+# (this is separated from the $(KERNEL_OBJS) because the crt*.o files
+#  need to be linked in a specific order to work)
+OBJS=\
+$(CRTI_OBJ) \
+$(CRTBEGIN_OBJ) \
+$(KERNEL_OBJS) \
+$(CRTEND_OBJ) \
+$(CRTN_OBJ) \
 
 # Phony targets
 ifndef CALLEDBYMASTER
@@ -40,8 +59,8 @@ all: build/kernel.bin
 include arch/$(BOOTARCH)/make.config
 
 # Create multiboot kernel (Development)
-build/kernel.bin: arch/$(BOOTARCH)/linker.ld $(KERNEL_OBJS)
-	$(CXX) -T arch/$(BOOTARCH)/linker.ld -o build/kernel.bin $(CPPFLAGS) -nostdlib $(KERNEL_OBJS) -lgcc
+build/kernel.bin: arch/$(BOOTARCH)/linker.ld $(OBJS)
+	$(CXX) -T arch/$(BOOTARCH)/linker.ld -o build/kernel.bin $(CPPFLAGS) -nostdlib $(OBJS) -lgcc
 
 # Include auto generated dependencies (if they exist)
 -include $(KERNEL_OBJS:.o=.d)

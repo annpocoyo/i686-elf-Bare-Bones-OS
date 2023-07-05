@@ -76,8 +76,11 @@ _start:
 	runtime support to work as well.
 	*/
 
+	/* Call global constructers. */
+	call _init
+
 	/*
-	Enter the high-level kernel. The ABI requires the stack is 16-byte
+	We can now enter the high-level kernel. The ABI requires the stack is 16-byte
 	aligned at the time of the call instruction (which afterwards pushes
 	the return pointer of size 4 bytes). The stack was originally 16-byte
 	aligned above and we've pushed a multiple of 16 bytes to the
