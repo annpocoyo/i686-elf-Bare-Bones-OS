@@ -14,21 +14,10 @@ endif
 CPPFLAGS+= -ffreestanding -O2
 CXXFLAGS+= -Wall -Wextra -fno-exceptions -fno-rtti
 
-# List of folders created in the build process
+# List of folders where builds are stored and received from
 BUILD_FOLDERS=build/ arch/$(BOOTARCH)/build/ kernel/build/ string/build/
 
-# List of header files required by kernel
-KERNEL_HEADERS=\
-$(KERNEL_ARCH_HEADERS) \
-include/kernel/tty.h \
-include/kernel/vga.h \
-
-# List of source files required by kernel
-KERNEL_SOURCES=\
-$(KERNEL_ARCH_SOURCES) \
-kernel/kernel.cpp \
-
-# List of objects required by kernel
+# List of objects from the kernel
 KERNEL_OBJS=\
 $(KERNEL_ARCH_OBJS) \
 string/build/strlen.o \
