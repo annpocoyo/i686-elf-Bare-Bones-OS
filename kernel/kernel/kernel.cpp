@@ -10,29 +10,29 @@
 #if !defined(__i386__)
 #error "This tutorial needs to be compiled with a ix86-elf compiler"
 #endif
- 
+
+/* Initialize terminal interface */
+TTY tty;
+
 extern "C" void kernel_main(void) 
 {
-	/* Initialize terminal interface */
-	terminal_initialize();
- 
 	/* Newline and scrolling support has been achieved as shown below: */
 	for (int i = 1; i != 11; i++) {
-		terminal_writestring("Hello World!\n");
-		terminal_writestring("This should be on the next line.\n");
-		terminal_writestring("THIS IS AMAZING! I built my own hello world kernel\n");
-		terminal_writestring("with newline support!\n");
-		terminal_writestring("and scrolling!\n");
+		tty.write_string("Hello World!\n");
+		tty.write_string("This should be on the next line.\n");
+		tty.write_string("THIS IS AMAZING! I built my own hello world kernel\n");
+		tty.write_string("with newline support!\n");
+		tty.write_string("and scrolling!\n");
 	}
 	
 	/* Let's showcase the colours :) */
-	terminal_writestring("We even have some nice looking ");
-	terminal_writestring("C", vga_entry_color(VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK));
-	terminal_writestring("o", vga_entry_color(VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK));
-	terminal_writestring("l", vga_entry_color(VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK));
-	terminal_writestring("o", vga_entry_color(VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK));
-	terminal_writestring("u", vga_entry_color(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK));
-	terminal_writestring("r", vga_entry_color(VGA_COLOR_RED, VGA_COLOR_BLACK));
-	terminal_writestring("s", vga_entry_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
-	terminal_writestring("!\n");
+	tty.write_string("We even have some nice looking ");
+	tty.write_string("C", vga_entry_color(VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK));
+	tty.write_string("o", vga_entry_color(VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK));
+	tty.write_string("l", vga_entry_color(VGA_COLOR_LIGHT_MAGENTA, VGA_COLOR_BLACK));
+	tty.write_string("o", vga_entry_color(VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK));
+	tty.write_string("u", vga_entry_color(VGA_COLOR_LIGHT_CYAN, VGA_COLOR_BLACK));
+	tty.write_string("r", vga_entry_color(VGA_COLOR_RED, VGA_COLOR_BLACK));
+	tty.write_string("s", vga_entry_color(VGA_COLOR_GREEN, VGA_COLOR_BLACK));
+	tty.write_string("!\n");
 }
