@@ -34,10 +34,10 @@ export
 all: install-headers install | sysroot/
 
 # Phony targets
-.PHONY: all install install-kernel \
-install-headers install-kernel-headers \
+.PHONY: all install $(INSTALL_TARGETS) \
+install-headers $(HEADER_TARGETS) \
 production launch launch-production \
-clean clean-sysroot clean-kernel \
+clean clean-builds clean-sysroot $(CLEAN_TARGETS) \
 
 # Install all parts into sysroot
 install: $(INSTALL_TARGETS) install-headers | sysroot/

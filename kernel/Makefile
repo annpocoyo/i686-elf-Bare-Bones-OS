@@ -36,9 +36,9 @@ kernel/build/kernel.o \
 
 # Phony targets
 ifndef CALLEDBYMASTER
-.PHONY: all clean
+.PHONY: all launch clean
 else
-.PHONY: all clean install install-headers
+.PHONY: all launch clean install install-headers
 endif
 
 # Suffixes
