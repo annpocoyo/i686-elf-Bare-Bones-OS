@@ -24,7 +24,7 @@ CLEAN_TARGETS=
 SYSROOT:=$(PWD)/sysroot
 CXX+= --sysroot=$(SYSROOT) -isystem=$(INCLUDEDIR)
 
-# Export all variables to make them available to child
+# Export all variables to make them available to child Makefiles
 export
 
 # Include all project specific targets
