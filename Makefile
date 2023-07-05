@@ -77,4 +77,4 @@ clean-builds:
 
 # Clean sysroot
 clean-sysroot:
-	rm -r sysroot/
+	rm -rf sysroot/

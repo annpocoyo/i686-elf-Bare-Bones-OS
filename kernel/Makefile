@@ -82,7 +82,7 @@ launch: all
 
 # Cleanup
 clean:
-	rm -r build/*
-	rm -r arch/$(BOOTARCH)/build/*
-	rm -r kernel/build/*
-	rm -r string/build/*
+	rm -rf build/*
+	rm -rf arch/$(BOOTARCH)/build/*
+	rm -rf kernel/build/*
+	rm -rf string/build/*
