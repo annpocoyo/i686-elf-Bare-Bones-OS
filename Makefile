@@ -47,9 +47,9 @@ install-headers: $(HEADER_TARGETS) | sysroot/
 
 # Create directory structure
 sysroot/:
-	mkdir -p $(SYSROOT)$(LIBDIR)
-	mkdir -p $(SYSROOT)$(INCLUDEDIR)
-	mkdir -p $(SYSROOT)$(BOOTDIR)
+	@mkdir -p $(SYSROOT)$(LIBDIR)
+	@mkdir -p $(SYSROOT)$(INCLUDEDIR)
+	@mkdir -p $(SYSROOT)$(BOOTDIR)
 
 # Build an iso (Production)
 production: build/os.iso
