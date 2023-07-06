@@ -15,7 +15,7 @@ CPPFLAGS+= -ffreestanding -O2
 CXXFLAGS+= -Wall -Wextra -fno-exceptions -fno-rtti
 
 # List of folders where builds are stored and received from
-BUILD_FOLDERS=build/ arch/$(BOOTARCH)/build/ kernel/build/ string/build/
+BUILD_FOLDERS=build arch/$(BOOTARCH)/build kernel/build string/build
 
 # Define location of crti.o and crtn.o (used for calling global constructers)
 # (This will be defined in the arch-specific options)
@@ -70,14 +70,14 @@ build/kernel.bin: arch/$(BOOTARCH)/linker.ld $(OBJS)
 
 # Define C++ template
 define CXX-template
-$1%.o: $1../%.cpp
+$1/%.o: $$(dir $1)%.cpp
 	$$(CXX) -MD -c $$< -o $$@ $$(CPPFLAGS) $$(CXXFLAGS)
 endef
 $(foreach folder,$(BUILD_FOLDERS),$(eval $(call CXX-template,$(folder))))
 
 # Define ASM template
 define ASM-template
-$1%.o: $1../%.s
+$1/%.o: $$(dir $1)%.s
 	$$(AS) -MD $$(basename $$@).d $$< -o $$@
 endef
 $(foreach folder,$(BUILD_FOLDERS),$(eval $(call ASM-template,$(folder))))
